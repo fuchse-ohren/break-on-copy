@@ -7,7 +7,7 @@
   "icons": {
     "256": "icons/icon.png"
   },
-  "permissions": ["notifications", "storage"],
+  "permissions": ["storage"],
   "browser_action": {
     "default_icon": "icons/icon.png",
     "default_title": "Break on Copy",
