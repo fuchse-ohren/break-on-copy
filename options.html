@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Fastcpy 設定</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main class="wrap">
+    <h1>Fastcpy 設定</h1>
+
+    <section class="box">
+      <h2>ショートカットキー</h2>
+      <p>選択した文字列をきれいにコピーするショートカットを設定できます。</p>
+      <div class="row">
+        <label><input type="checkbox" id="shift"> Shift</label>
+        <label><input type="checkbox" id="ctrl"> Ctrl</label>
+        <label><input type="checkbox" id="alt"> Alt</label>
+        <label><input type="checkbox" id="meta"> Meta</label>
+      </div>
+      <div class="row">
+        <label for="key">キー</label>
+        <input id="key" type="text" maxlength="1" value="c">
+      </div>
+      <button id="save">保存</button>
+      <p id="msg" class="msg"></p>
+    </section>
+
+    <section class="box">
+      <h2>使い方</h2>
+      <ol>
+        <li>ページ上でコピーしたい文字列を選択します。</li>
+        <li>設定したショートカットキーを押します（初期値は Shift + C）。</li>
+        <li>不要な連続改行を整えたテキストがクリップボードにコピーされます。</li>
+      </ol>
+    </section>
+  </main>
+
+  <script src="options.js"></script>
+</body>
+</html>
