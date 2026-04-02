@@ -2,33 +2,70 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Break on Copy 設定</title>
   <link rel="stylesheet" href="options.css">
 </head>
 <body>
-  <main class="wrap">
-    <h1>Break on Copy 設定</h1>
+  <main class="page" aria-labelledby="page-title">
+    <header class="page-head">
+      <h1 id="page-title" class="title-main">Break on Copy 設定</h1>
+      <p class="text-lead">デジタル庁デザインシステムに準拠した見た目で、ショートカットキーを設定できます。</p>
+    </header>
 
-    <section class="box">
-      <h2>ショートカットキー</h2>
-      <p>選択した文字列をきれいにコピーするショートカットを設定できます。</p>
-      <div class="row">
-        <label><input type="checkbox" id="shift"> Shift</label>
-        <label><input type="checkbox" id="ctrl"> Ctrl</label>
-        <label><input type="checkbox" id="alt"> Alt</label>
-        <label><input type="checkbox" id="meta"> Meta</label>
+    <section class="dads-card" aria-labelledby="shortcut-title">
+      <h2 id="shortcut-title" class="title-sub">ショートカットキー</h2>
+
+      <fieldset class="dads-fieldset">
+        <legend class="dads-legend">組み合わせキー</legend>
+        <div class="check-grid">
+          <label class="dads-checkbox" data-size="sm">
+            <span class="dads-checkbox__checkbox">
+              <input class="dads-checkbox__input" type="checkbox" id="shift">
+            </span>
+            <span class="dads-checkbox__label">Shift</span>
+          </label>
+
+          <label class="dads-checkbox" data-size="sm">
+            <span class="dads-checkbox__checkbox">
+              <input class="dads-checkbox__input" type="checkbox" id="ctrl">
+            </span>
+            <span class="dads-checkbox__label">Ctrl</span>
+          </label>
+
+          <label class="dads-checkbox" data-size="sm">
+            <span class="dads-checkbox__checkbox">
+              <input class="dads-checkbox__input" type="checkbox" id="alt">
+            </span>
+            <span class="dads-checkbox__label">Alt</span>
+          </label>
+
+          <label class="dads-checkbox" data-size="sm">
+            <span class="dads-checkbox__checkbox">
+              <input class="dads-checkbox__input" type="checkbox" id="meta">
+            </span>
+            <span class="dads-checkbox__label">Meta</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="input-block">
+        <label for="key" class="input-label">キー（1文字）</label>
+        <span class="dads-input-text">
+          <input id="key" class="dads-input-text__input" type="text" maxlength="1" value="c" data-size="sm" inputmode="text" aria-describedby="key-hint">
+        </span>
+        <p id="key-hint" class="text-hint">例: C の場合は「c」と入力します。</p>
       </div>
-      <div class="row">
-        <label for="key">キー</label>
-        <input id="key" type="text" maxlength="1" value="c">
+
+      <div class="action-row">
+        <button id="save" class="dads-button" data-size="sm" data-type="solid-fill" type="button">保存</button>
+        <p id="msg" class="msg" aria-live="polite"></p>
       </div>
-      <button id="save">保存</button>
-      <p id="msg" class="msg"></p>
     </section>
 
-    <section class="box">
-      <h2>使い方</h2>
-      <ol>
+    <section class="dads-card" aria-labelledby="howto-title">
+      <h2 id="howto-title" class="title-sub">使い方</h2>
+      <ol class="howto-list">
         <li>ページ上でコピーしたい文字列を選択します。</li>
         <li>設定したショートカットキーを押します（初期値は Shift + C）。</li>
         <li>不要な連続改行を整えたテキストがクリップボードにコピーされます。</li>
