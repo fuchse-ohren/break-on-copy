@@ -1,7 +1,7 @@
 {
   "description": "選択したテキストをショートカットで整形コピーできます",
   "manifest_version": 2,
-  "name": "Fastcpy for M$",
+  "name": "Break on Copy",
   "version": "1.7.1",
   "homepage_url": "https://lunatic.red",
   "icons": {
@@ -10,7 +10,7 @@
   "permissions": ["notifications", "storage"],
   "browser_action": {
     "default_icon": "icons/icon.png",
-    "default_title": "title",
+    "default_title": "Break on Copy",
     "default_popup": "options/options.html"
   },
   "content_scripts": [
