@@ -4,11 +4,11 @@ var keySettei = {
   ctrl: false,
   alt: false,
   meta: false,
-  key: "c"
+  key: "c",
 };
 var mousePos = {
   x: 0,
-  y: 0
+  y: 0,
 };
 var tipTimer = null;
 
@@ -16,7 +16,11 @@ function testSameOrigin(url) {
   var loc = window.location;
   var a = document.createElement("a");
   a.href = url;
-  return a.hostname === loc.hostname && a.port === loc.port && a.protocol === loc.protocol;
+  return (
+    a.hostname === loc.hostname &&
+    a.port === loc.port &&
+    a.protocol === loc.protocol
+  );
 }
 
 function seikeiText(text) {
@@ -38,7 +42,7 @@ function loadSettei() {
           ctrl: !!saved.ctrl,
           alt: !!saved.alt,
           meta: !!saved.meta,
-          key: (saved.key || "c").toLowerCase()
+          key: (saved.key || "c").toLowerCase(),
         };
       }
     })
@@ -71,7 +75,10 @@ function showCopyTip(winObj, text) {
 
   var tip = docObj.createElement("div");
   tip.id = "selcopy-mouse-tip";
-  tip.textContent = "コピーしました: " + text.substr(0, 80);
+  tip.textContent =
+    "コピーしました!\n『" +
+    (text.length > 80 ? text.slice(0, 80) + "..." : text) +
+    "』";
   tip.style.position = "fixed";
   tip.style.left = mousePos.x + 14 + "px";
   tip.style.top = mousePos.y + 14 + "px";
@@ -118,8 +125,12 @@ function onKeyDown(e, winObj) {
     return;
   }
 
-  var tag = (e.target && e.target.tagName ? e.target.tagName : "").toLowerCase();
-  var isEdit = e.target && (e.target.isContentEditable || tag === "input" || tag === "textarea");
+  var tag = (
+    e.target && e.target.tagName ? e.target.tagName : ""
+  ).toLowerCase();
+  var isEdit =
+    e.target &&
+    (e.target.isContentEditable || tag === "input" || tag === "textarea");
 
   if (isEdit) {
     return;
@@ -158,12 +169,17 @@ function initListener() {
     var iframes = document.getElementsByTagName("iframe");
     for (var i = 0; i < iframes.length; i++) {
       var frame = iframes[i];
-      if (frame.contentDocument && testSameOrigin(frame.contentDocument.location.href)) {
+      if (
+        frame.contentDocument &&
+        testSameOrigin(frame.contentDocument.location.href)
+      ) {
         addDocListener(frame.contentDocument, frame.contentWindow);
       }
     }
   } catch (err) {
-    console.log("[selcopy.js] iframeへのイベントリスナ追加でエラーが発生しました");
+    console.log(
+      "[selcopy.js] iframeへのイベントリスナ追加でエラーが発生しました",
+    );
   }
 }
 
@@ -182,7 +198,7 @@ if (browser.storage && browser.storage.onChanged) {
           ctrl: !!next.ctrl,
           alt: !!next.alt,
           meta: !!next.meta,
-          key: (next.key || "c").toLowerCase()
+          key: (next.key || "c").toLowerCase(),
         };
       }
     }

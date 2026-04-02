@@ -2,28 +2,21 @@
   "description": "選択したテキストをショートカットで整形コピーできます",
   "manifest_version": 2,
   "name": "Fastcpy for M$",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "homepage_url": "https://lunatic.red",
   "icons": {
     "256": "icons/icon.png"
   },
-  "permissions": [
-    "notifications",
-    "storage"
-  ],
-  "options_ui": {
-    "page": "options.html",
-    "browser_style": false,
-    "open_in_tab": true
+  "permissions": ["notifications", "storage"],
+  "browser_action": {
+    "default_icon": "icons/icon.png",
+    "default_title": "title",
+    "default_popup": "options/options.html"
   },
   "content_scripts": [
     {
-      "matches": [
-        "*://*.mcas.ms/*"
-      ],
-      "js": [
-        "selcopy.js"
-      ]
+      "matches": ["<all_urls>"],
+      "js": ["selcopy.js"]
     }
   ],
   "browser_specific_settings": {
