@@ -6,6 +6,11 @@ var keySettei = {
   meta: false,
   key: "c"
 };
+var mousePos = {
+  x: 0,
+  y: 0
+};
+var tipTimer = null;
 
 function testSameOrigin(url) {
   var loc = window.location;
@@ -53,6 +58,49 @@ function isKeyMatch(e) {
   );
 }
 
+function showCopyTip(winObj, text) {
+  var docObj = winObj.document;
+  if (!docObj || !docObj.body) {
+    return;
+  }
+
+  var oldTip = docObj.getElementById("selcopy-mouse-tip");
+  if (oldTip && oldTip.parentNode) {
+    oldTip.parentNode.removeChild(oldTip);
+  }
+
+  var tip = docObj.createElement("div");
+  tip.id = "selcopy-mouse-tip";
+  tip.textContent = "コピーしました: " + text.substr(0, 80);
+  tip.style.position = "fixed";
+  tip.style.left = mousePos.x + 14 + "px";
+  tip.style.top = mousePos.y + 14 + "px";
+  tip.style.maxWidth = "360px";
+  tip.style.padding = "8px 10px";
+  tip.style.background = "rgba(20, 20, 20, 0.92)";
+  tip.style.color = "#fff";
+  tip.style.borderRadius = "8px";
+  tip.style.fontSize = "12px";
+  tip.style.lineHeight = "1.4";
+  tip.style.zIndex = "2147483647";
+  tip.style.pointerEvents = "none";
+  tip.style.whiteSpace = "pre-wrap";
+  tip.style.wordBreak = "break-word";
+  tip.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.25)";
+
+  docObj.body.appendChild(tip);
+
+  if (tipTimer) {
+    clearTimeout(tipTimer);
+  }
+
+  tipTimer = setTimeout(function () {
+    if (tip.parentNode) {
+      tip.parentNode.removeChild(tip);
+    }
+  }, 1600);
+}
+
 function copySelected(winObj) {
   var selected = winObj.getSelection().toString();
   var copyText = seikeiText(selected);
@@ -60,11 +108,7 @@ function copySelected(winObj) {
   if (copyText !== "") {
     navigator.clipboard.writeText(copyText);
     winObj.getSelection().removeAllRanges();
-
-    new Notification("クリップボードにコピーしました", {
-      body: copyText.substr(0, 150),
-      icon: browser.runtime.getURL("icons/icon.png")
-    });
+    showCopyTip(winObj, copyText);
     console.log("[selcopy.js] ショートカットで選択テキストをコピーしました");
   }
 }
@@ -85,6 +129,11 @@ function onKeyDown(e, winObj) {
   copySelected(winObj);
 }
 
+function onMouseMove(e) {
+  mousePos.x = e.clientX;
+  mousePos.y = e.clientY;
+}
+
 function addDocListener(docObj, winObj) {
   if (!docObj || docObj.__selcopyKeyDone) {
     return;
@@ -93,6 +142,7 @@ function addDocListener(docObj, winObj) {
   docObj.addEventListener("keydown", function (e) {
     onKeyDown(e, winObj);
   });
+  docObj.addEventListener("mousemove", onMouseMove, { passive: true });
   docObj.__selcopyKeyDone = true;
 }
 
@@ -138,5 +188,3 @@ if (browser.storage && browser.storage.onChanged) {
     }
   });
 }
-
-Notification.requestPermission();
