@@ -47,7 +47,7 @@ function loadSettei() {
       }
     })
     .catch(function () {
-      console.log("[selcopy.js] 設定の読み込みに失敗しました");
+      console.log("[Break on Copy] 設定の読み込みに失敗しました");
     });
 }
 
@@ -116,7 +116,7 @@ function copySelected(winObj) {
     navigator.clipboard.writeText(copyText);
     winObj.getSelection().removeAllRanges();
     showCopyTip(winObj, copyText);
-    console.log("[selcopy.js] ショートカットで選択テキストをコピーしました");
+    console.log("[Break on Copy] ショートカットで選択テキストをコピーしました");
   }
 }
 
@@ -160,27 +160,12 @@ function addDocListener(docObj, winObj) {
 function initListener() {
   if (location.href !== currentUrl) {
     currentUrl = location.href;
-    console.log("[selcopy.js] URL変更を検知したためイベントリスナを確認します");
+    console.log(
+      "[Break on Copy] URL変更を検知したためイベントリスナを確認します",
+    );
   }
 
   addDocListener(document, window);
-
-  try {
-    var iframes = document.getElementsByTagName("iframe");
-    for (var i = 0; i < iframes.length; i++) {
-      var frame = iframes[i];
-      if (
-        frame.contentDocument &&
-        testSameOrigin(frame.contentDocument.location.href)
-      ) {
-        addDocListener(frame.contentDocument, frame.contentWindow);
-      }
-    }
-  } catch (err) {
-    console.log(
-      "[selcopy.js] iframeへのイベントリスナ追加でエラーが発生しました",
-    );
-  }
 }
 
 loadSettei().then(function () {
