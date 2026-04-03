@@ -1,65 +1,11 @@
-var currentUrl = "";
-var keySettei = {
-  shift: true,
-  ctrl: false,
-  alt: false,
-  meta: false,
-  key: "c",
-};
 var mousePos = {
   x: 0,
   y: 0,
 };
 var tipTimer = null;
 
-function testSameOrigin(url) {
-  var loc = window.location;
-  var a = document.createElement("a");
-  a.href = url;
-  return (
-    a.hostname === loc.hostname &&
-    a.port === loc.port &&
-    a.protocol === loc.protocol
-  );
-}
-
 function seikeiText(text) {
   return text.replace(/(\r\n){2,}|\r{2,}|\n{2,}/g, "\n").trim();
-}
-
-function loadSettei() {
-  if (!browser.storage || !browser.storage.local) {
-    return Promise.resolve();
-  }
-
-  return browser.storage.local
-    .get("copy_key_settei")
-    .then(function (data) {
-      if (data && data.copy_key_settei) {
-        var saved = data.copy_key_settei;
-        keySettei = {
-          shift: !!saved.shift,
-          ctrl: !!saved.ctrl,
-          alt: !!saved.alt,
-          meta: !!saved.meta,
-          key: (saved.key || "c").toLowerCase(),
-        };
-      }
-    })
-    .catch(function () {
-      console.log("[Break on Copy] 設定の読み込みに失敗しました");
-    });
-}
-
-function isKeyMatch(e) {
-  var pressKey = (e.key || "").toLowerCase();
-  return (
-    e.shiftKey === keySettei.shift &&
-    e.ctrlKey === keySettei.ctrl &&
-    e.altKey === keySettei.alt &&
-    e.metaKey === keySettei.meta &&
-    pressKey === keySettei.key
-  );
 }
 
 function showCopyTip(winObj, text) {
@@ -112,32 +58,14 @@ function copySelected(winObj) {
   var selected = winObj.getSelection().toString();
   var copyText = seikeiText(selected);
 
-  if (copyText !== "") {
-    navigator.clipboard.writeText(copyText);
-    winObj.getSelection().removeAllRanges();
-    showCopyTip(winObj, copyText);
-    console.log("[Break on Copy] ショートカットで選択テキストをコピーしました");
-  }
-}
-
-function onKeyDown(e, winObj) {
-  if (!isKeyMatch(e)) {
+  if (copyText === "") {
     return;
   }
 
-  var tag = (
-    e.target && e.target.tagName ? e.target.tagName : ""
-  ).toLowerCase();
-  var isEdit =
-    e.target &&
-    (e.target.isContentEditable || tag === "input" || tag === "textarea");
-
-  if (isEdit) {
-    return;
-  }
-
-  e.preventDefault();
-  copySelected(winObj);
+  navigator.clipboard.writeText(copyText);
+  winObj.getSelection().removeAllRanges();
+  showCopyTip(winObj, copyText);
+  console.log("[Break on Copy] コマンドで選択テキストをコピーしました");
 }
 
 function onMouseMove(e) {
@@ -145,47 +73,15 @@ function onMouseMove(e) {
   mousePos.y = e.clientY;
 }
 
-function addDocListener(docObj, winObj) {
-  if (!docObj || docObj.__selcopyKeyDone) {
-    return;
-  }
+function setup() {
+  document.addEventListener("mousemove", onMouseMove, { passive: true });
 
-  docObj.addEventListener("keydown", function (e) {
-    onKeyDown(e, winObj);
-  });
-  docObj.addEventListener("mousemove", onMouseMove, { passive: true });
-  docObj.__selcopyKeyDone = true;
-}
-
-function initListener() {
-  if (location.href !== currentUrl) {
-    currentUrl = location.href;
-    console.log(
-      "[Break on Copy] URL変更を検知したためイベントリスナを確認します",
-    );
-  }
-
-  addDocListener(document, window);
-}
-
-loadSettei().then(function () {
-  initListener();
-  setInterval(initListener, 2000);
-});
-
-if (browser.storage && browser.storage.onChanged) {
-  browser.storage.onChanged.addListener(function (changes, area) {
-    if (area === "local" && changes.copy_key_settei) {
-      var next = changes.copy_key_settei.newValue;
-      if (next) {
-        keySettei = {
-          shift: !!next.shift,
-          ctrl: !!next.ctrl,
-          alt: !!next.alt,
-          meta: !!next.meta,
-          key: (next.key || "c").toLowerCase(),
-        };
-      }
+  browser.runtime.onMessage.addListener(function (msg) {
+    if (!msg || msg.action !== "run_copy") {
+      return;
     }
+    copySelected(window);
   });
 }
+
+setup();

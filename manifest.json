@@ -7,11 +7,13 @@
   "icons": {
     "256": "icons/icon.png"
   },
-  "permissions": ["storage"],
   "browser_action": {
     "default_icon": "icons/icon.png",
     "default_title": "Break on Copy",
     "default_popup": "options/options.html"
+  },
+  "background": {
+    "scripts": ["background.js"]
   },
   "content_scripts": [
     {
@@ -20,6 +22,14 @@
       "all_frames": true
     }
   ],
+  "commands": {
+    "seikei_copy": {
+      "suggested_key": {
+        "default": "Shift+C"
+      },
+      "description": "選択テキストを整形してコピー"
+    }
+  },
   "browser_specific_settings": {
     "gecko": {
       "id": "{660841a5-a156-4071-ad5e-8b5b3bca2247}",
