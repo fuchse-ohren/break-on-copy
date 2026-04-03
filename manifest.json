@@ -2,7 +2,7 @@
   "description": "選択したテキストをショートカットで整形コピーできます",
   "manifest_version": 2,
   "name": "Break on Copy",
-  "version": "1.0",
+  "version": "1.1",
   "homepage_url": "https://lunatic.red",
   "icons": {
     "256": "icons/icon.png"
