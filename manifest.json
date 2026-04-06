@@ -25,7 +25,7 @@
   "commands": {
     "seikei_copy": {
       "suggested_key": {
-        "default": "Ctrl+Alt+C"
+        "default": "F1"
       },
       "description": "選択中のテキストを整形してコピー"
     }
