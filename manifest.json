@@ -27,7 +27,7 @@
       "suggested_key": {
         "default": "Ctrl+Alt+C"
       },
-      "description": "選択テキストを整形してコピー"
+      "description": "選択中のテキストを整形してコピー"
     }
   },
   "browser_specific_settings": {
