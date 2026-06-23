@@ -21,10 +21,7 @@ function showCopyTip(winObj, text) {
 
   var tip = docObj.createElement("div");
   tip.id = "selcopy-mouse-tip";
-  tip.textContent =
-    "コピーしました!\n『" +
-    (text.length > 80 ? text.slice(0, 80) + "..." : text) +
-    "』";
+  tip.textContent = "コピーしました!\n『" + (text.length > 80 ? text.slice(0, 80) + "..." : text) + "』";
   tip.style.position = "fixed";
   tip.style.left = mousePos.x + 14 + "px";
   tip.style.top = mousePos.y + 14 + "px";
@@ -54,11 +51,42 @@ function showCopyTip(winObj, text) {
   }, 1600);
 }
 
-function copySelected(winObj) {
-  var selected = winObj.getSelection().toString();
-  var copyText = seikeiText(selected);
+function getVisibleSelectedText(winObj = window) {
+  const sel = winObj.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) {
+    return "";
+  }
+  const range = sel.getRangeAt(0);
+  const fragment = range.cloneContents();
+  function extractText(node) {
+    if (!node) return "";
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node.nodeValue || "";
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE && node.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
+      return "";
+    }
+    if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "BR") {
+      return "\n";
+    }
+    let text = "";
+    for (const child of node.childNodes) {
+      text += extractText(child);
+    }
+    return text;
+  }
+  return extractText(fragment);
+}
 
-  if (copyText === "") {
+function copySelected(winObj) {
+  try {
+    var selected = getVisibleSelectedText();
+    var copyText = seikeiText(selected);
+    if (copyText === "") {
+      return;
+    }
+  } catch {
+    console.warn("[Break on Copy] コピー文字列の取得に失敗しました。何も選択されていなかったか、iframe内のコンテンツを選択していた可能性があります。");
     return;
   }
 
@@ -83,5 +111,4 @@ function setup() {
     copySelected(window);
   });
 }
-
 setup();
