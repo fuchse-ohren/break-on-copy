@@ -5,6 +5,9 @@ var mousePos = {
 var tipTimer = null;
 
 function seikeiText(text) {
+  //NBSPを半角スペースに置換
+  text = text.replace(/\u00A0/g, " ");
+  //連続する改行を1つにまとめる
   return text.replace(/(\r\n){2,}|\r{2,}|\n{2,}/g, "\n").trim();
 }
 
@@ -58,6 +61,7 @@ function getVisibleSelectedText(winObj = window) {
   }
   const range = sel.getRangeAt(0);
   const fragment = range.cloneContents();
+
   function extractText(node) {
     if (!node) return "";
     if (node.nodeType === Node.TEXT_NODE) {
@@ -69,6 +73,7 @@ function getVisibleSelectedText(winObj = window) {
     if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "BR") {
       return "\n";
     }
+
     let text = "";
     for (const child of node.childNodes) {
       text += extractText(child);
