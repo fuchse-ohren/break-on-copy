@@ -7,8 +7,38 @@ var tipTimer = null;
 function seikeiText(text) {
   //NBSPを半角スペースに置換
   text = text.replace(/\u00A0/g, " ");
-  //連続する改行を1つにまとめる
-  return text.replace(/(\r\n){2,}|\r{2,}|\n{2,}/g, "\n").trim();
+
+  if (typeof text !== "string" || text.length === 0) return text;
+  text = text.replace(/\r\n?/g, "\n");
+  text = text.replace(/^\s+$/g, "\n");
+
+  const runs = text.match(/\n+/g) ?? [];
+  const counts = new Map();
+  for (const run of runs) {
+    const len = run.length;
+    counts.set(len, (counts.get(len) ?? 0) + 1);
+  }
+
+  // 改行数の最頻値を一度の改行として扱う。
+  let mode = Infinity;
+  let modeFreq = -1;
+  for (const [len, freq] of counts) {
+    if (freq > modeFreq || (freq === modeFreq && len < mode)) {
+      mode = len;
+      modeFreq = freq;
+    }
+  }
+
+  // 連続改行を置換
+  text = text.replace(/\n+/g, (m) => {
+    if (m.length > mode) return "\n\n";
+    if (m.length === mode) return "\n";
+    return m;
+  });
+
+  // 行末の空白を削除
+  text = text.replace(/[ \t\u3000]+$/gm, "");
+  return text;
 }
 
 function showCopyTip(winObj, text) {
@@ -77,6 +107,7 @@ function getVisibleSelectedText(winObj = window) {
     let text = "";
     for (const child of node.childNodes) {
       text += extractText(child);
+      text += "\n";
     }
     return text;
   }
